@@ -79,6 +79,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameShould.cs" />
+    <Compile Include="PlayerRepositoryShould.cs" />
+    <Compile Include="PlayerShould.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

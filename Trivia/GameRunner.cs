@@ -12,13 +12,13 @@ namespace Trivia
 
         public static void RunGame(Random rand, Action<string> writeLine)
         {
-            var game = new Game();
-            game.AddPlayer("Chet", writeLine);
-            game.AddPlayer("Pat", writeLine);
-            game.AddPlayer("Sue", writeLine);
+            var game = new Game(writeLine,new[] { "Chet","Pat", "Sue"});
+            //game.AddPlayer( writeLine);
+            //game.AddPlayer(writeLine);
+            //game.AddPlayer(writeLine);
             do
             {
-            } while (game.Roll(rand, writeLine));
+            } while (game.RollOneRound(rand, writeLine));
         }
     }
 }

@@ -82,6 +82,8 @@
     <Compile Include="PlayerRepositoryShould.cs" />
     <Compile Include="PlayerShould.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuestionCategoryShould.cs" />
+    <Compile Include="QuestionRepositoryShould.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Trivia\Trivia.csproj">

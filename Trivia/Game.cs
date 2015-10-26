@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Trivia
 {
@@ -8,10 +6,7 @@ namespace Trivia
     {
         private int _playerIndex;
         private readonly PlayerRepository _players = new PlayerRepository();
-        private readonly LinkedList<string> _popQuestions = new LinkedList<string>();
-        private readonly LinkedList<string> _rockQuestions = new LinkedList<string>();
-        private readonly LinkedList<string> _scienceQuestions = new LinkedList<string>();
-        private readonly LinkedList<string> _sportsQuestions = new LinkedList<string>();
+        private readonly QuestionRepository _questionRepository = new QuestionRepository();
 
         public Game(Action<string> writeLine, string[] players)
         {
@@ -23,10 +18,10 @@ namespace Trivia
         {
             for (var i = 0; i < 50; i++)
             {
-                _popQuestions.AddLast("Pop Question " + i);
-                _scienceQuestions.AddLast(("Science Question " + i));
-                _sportsQuestions.AddLast(("Sports Question " + i));
-                _rockQuestions.AddLast("Rock Question " + i);
+                _questionRepository.Add(new Question(QuestionCategory.Pop, "Pop Question " + i));
+                _questionRepository.Add(new Question(QuestionCategory.Science, "Science Question " + i));
+                _questionRepository.Add(new Question(QuestionCategory.Sports, "Sports Question " + i));
+                _questionRepository.Add(new Question(QuestionCategory.Rock, "Rock Question " + i));
             }
         }
 
@@ -133,43 +128,12 @@ namespace Trivia
 
         private void AskQuestionByCurrentCategory(Action<string> writeLine)
         {
-            var currentCategory = CurrentCategory();
-            writeLine("The category is " + currentCategory);
-            if (currentCategory == "Pop")
-            {
-                writeLine(_popQuestions.First());
-                _popQuestions.RemoveFirst();
-            }
-            if (currentCategory == "Science")
-            {
-                writeLine(_scienceQuestions.First());
-                _scienceQuestions.RemoveFirst();
-            }
-            if (currentCategory == "Sports")
-            {
-                writeLine(_sportsQuestions.First());
-                _sportsQuestions.RemoveFirst();
-            }
-            if (currentCategory == "Rock")
-            {
-                writeLine(_rockQuestions.First());
-                _rockQuestions.RemoveFirst();
-            }
+            var location = _players.GetPlayerByIndex(_playerIndex).Location();
+            var currentCategory = _questionRepository.CurrentCategory(location);
+            writeLine("The category is " + currentCategory.GetDescription());
+            writeLine(_questionRepository.GetFirstQuestionBy(currentCategory));
+            _questionRepository.RemoveFirstQuestionOf(currentCategory);
         }
 
-        private string CurrentCategory()
-        {
-            var currentPlayer = _players.GetPlayerByIndex(_playerIndex);
-            if (currentPlayer.Location() == 0) return "Pop";
-            if (currentPlayer.Location() == 4) return "Pop";
-            if (currentPlayer.Location() == 8) return "Pop";
-            if (currentPlayer.Location() == 1) return "Science";
-            if (currentPlayer.Location() == 5) return "Science";
-            if (currentPlayer.Location() == 9) return "Science";
-            if (currentPlayer.Location() == 2) return "Sports";
-            if (currentPlayer.Location() == 6) return "Sports";
-            if (currentPlayer.Location() == 10) return "Sports";
-            return "Rock";
-        }
     }
 }

@@ -15,7 +15,6 @@ namespace Trivia.Tests
             _playerRepository = new PlayerRepository();
             _playerA = new Player("ana", 0, 0);
             _playerB = new Player("bob", 0, 0);
-            
         }
 
         [Test]

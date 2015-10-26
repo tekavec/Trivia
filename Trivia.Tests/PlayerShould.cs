@@ -33,9 +33,11 @@ namespace Trivia.Tests
         [Test]
         public void decrease_location_by_12_if_location_is_greater_than_11()
         {
-            _playerA.ChangeLocationBy(13);
+            var player = new Player("bob", 2, 0);
 
-            Assert.That(_playerA.Location(), Is.EqualTo(2));
+            player.ChangeLocationBy(13);
+
+            Assert.That(player.Location(), Is.EqualTo(3));
         }
 
         [Test]

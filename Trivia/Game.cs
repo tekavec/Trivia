@@ -1,79 +1,73 @@
 ﻿using System;
+using System.Linq;
 
 namespace Trivia
 {
     public class Game
     {
-        private int _playerIndex;
         private readonly PlayerRepository _players = new PlayerRepository();
-        private readonly QuestionRepository _questionRepository = new QuestionRepository();
+        private readonly QuestionRepository _questionRepository = new QuestionRepository(50);
 
         public Game(Action<string> writeLine, string[] players)
         {
-            CreatePlayers(writeLine, players);
-            CreateQuestions();
+            CreatePlayers(players);
+            PrintoutPlayers(writeLine);
         }
 
-        private void CreateQuestions()
-        {
-            for (var i = 0; i < 50; i++)
-            {
-                _questionRepository.Add(new Question(QuestionCategory.Pop, "Pop Question " + i));
-                _questionRepository.Add(new Question(QuestionCategory.Science, "Science Question " + i));
-                _questionRepository.Add(new Question(QuestionCategory.Sports, "Sports Question " + i));
-                _questionRepository.Add(new Question(QuestionCategory.Rock, "Rock Question " + i));
-            }
-        }
-
-        private void CreatePlayers(Action<string> writeLine, string[] players)
+        private void CreatePlayers(string[] players)
         {
             foreach (var player in players)
             {
-                AddPlayer(player, writeLine);
+                _players.Add(new Player(player, 0, 0));
             }
         }
 
-        private void AddPlayer(string playerName, Action<string> writeLine)
+        private void PrintoutPlayers(Action<string> writeLine)
         {
-            _players.Add(new Player(playerName, 0, 0));
-            writeLine(playerName + " was added");
-            writeLine("They are player number " + _players.Count());
+            for (int i = 0; i < _players.Count(); i++)
+            {
+                writeLine(_players.GetPlayerByIndex(i) + " was added");
+                writeLine("They are player number " + (i+1));
+            }
         }
 
         public bool RollOneRound(Random rand, Action<string> writeLine)
         {
             int roundRollValue = rand.Next(5) + 1;
-            var currentPlayer = _players.GetPlayerByIndex(_playerIndex);
+            var isGettingOutOfPenaltyBox = (roundRollValue % 2 != 0);
+            var currentPlayer = _players.GetCurentPlayer();
             writeLine(currentPlayer + " is the current player");
             writeLine("They have rolled a " + roundRollValue);
-            var isGettingOutOfPenaltyBox = (roundRollValue % 2 != 0);
 
             if (currentPlayer.IsInPenaltyBox())
             {
                 if (isGettingOutOfPenaltyBox)
                 {
                     writeLine(currentPlayer + " is getting out of the penalty box");
-                    RearrangePlaces(writeLine, roundRollValue, currentPlayer);
-                    AskQuestionByCurrentCategory(writeLine);
                 }
                 else
                 {
                     writeLine(currentPlayer + " is not getting out of the penalty box");
                 }
             }
-            if (!currentPlayer.IsInPenaltyBox())
+
+            if (currentPlayer.IsInPenaltyBox() && isGettingOutOfPenaltyBox || !currentPlayer.IsInPenaltyBox())
             {
-                RearrangePlaces(writeLine, roundRollValue, currentPlayer);
-                AskQuestionByCurrentCategory(writeLine);
+                currentPlayer.ChangeLocationBy(roundRollValue);
+                var currentCategory = _questionRepository.CurrentCategory(_players.GetCurentPlayer().Location());
+                writeLine(currentPlayer
+                                     + "'s new location is "
+                                     + currentPlayer.Location());
+                writeLine("The category is " + currentCategory.GetDescription());
+                writeLine(_questionRepository.GetFirstQuestionBy(currentCategory));
+                _questionRepository.RemoveFirstQuestionOf(currentCategory);
             }
             if (rand.Next(9) == 7)
             {
                 writeLine("Question was incorrectly answered");
                 writeLine(currentPlayer + " was sent to the penalty box");
                 currentPlayer.Penalize();
-
-                _playerIndex++;
-                if (_playerIndex == _players.Count()) _playerIndex = 0;
+                _players.SetNextCurrentPlayer();
                 return true;
             }
             bool roundDoesNotHaveWinner;
@@ -89,10 +83,10 @@ namespace Trivia
                               + " Gold Coins.");
 
                     roundDoesNotHaveWinner = !currentPlayer.IsWinning();
-                    IncreasePlayerIndex();
+                    _players.SetNextCurrentPlayer();
                     return roundDoesNotHaveWinner;
                 }
-                IncreasePlayerIndex();
+                _players.SetNextCurrentPlayer();
                 return true;
             }
             writeLine("Answer was corrent!!!!");
@@ -102,38 +96,8 @@ namespace Trivia
                       + currentPlayer.Coins()
                       + " Gold Coins.");
             roundDoesNotHaveWinner = !currentPlayer.IsWinning();
-            IncreasePlayerIndex();
+            _players.SetNextCurrentPlayer();
             return roundDoesNotHaveWinner;
         }
-
-        private void IncreasePlayerIndex()
-        {
-            _playerIndex++;
-            if (_playerIndex == _players.Count())
-            {
-                _playerIndex = 0;
-            }
-        }
-
-        private void RearrangePlaces(
-            Action<string> writeLine, 
-            int roundRollValue, 
-            Player currentPlayer)
-        {
-            currentPlayer.ChangeLocationBy(roundRollValue);
-            writeLine(currentPlayer
-                      + "'s new location is "
-                      + currentPlayer.Location());
-        }
-
-        private void AskQuestionByCurrentCategory(Action<string> writeLine)
-        {
-            var location = _players.GetPlayerByIndex(_playerIndex).Location();
-            var currentCategory = _questionRepository.CurrentCategory(location);
-            writeLine("The category is " + currentCategory.GetDescription());
-            writeLine(_questionRepository.GetFirstQuestionBy(currentCategory));
-            _questionRepository.RemoveFirstQuestionOf(currentCategory);
-        }
-
     }
 }

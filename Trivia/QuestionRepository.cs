@@ -8,9 +8,15 @@ namespace Trivia
     {
         private readonly IList<Question> _questions = new List<Question>();
 
-        public void Add(Question question)
+        public QuestionRepository(int capacity)
         {
-            _questions.Add(question);
+            for (var i = 0; i < capacity; i++)
+            {
+                _questions.Add(new Question(QuestionCategory.Pop, "Pop Question " + i));
+                _questions.Add(new Question(QuestionCategory.Science, "Science Question " + i));
+                _questions.Add(new Question(QuestionCategory.Sports, "Sports Question " + i));
+                _questions.Add(new Question(QuestionCategory.Rock, "Rock Question " + i));
+            }
         }
 
         public bool Contains(Question question)

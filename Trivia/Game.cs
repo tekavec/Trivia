@@ -6,29 +6,19 @@ namespace Trivia
     public class Game
     {
         private readonly PlayerRepository _players = new PlayerRepository();
-        private readonly QuestionRepository _questionRepository = new QuestionRepository(50);
+        private readonly QuestionRepository _questions = new QuestionRepository(50);
+        private GamePrinter _gamePrinter;
 
         public Game(Action<string> writeLine, string[] players)
         {
             CreatePlayers(players);
-            PrintoutPlayers(writeLine);
+            _gamePrinter = new GamePrinter(writeLine, _players, _questions);
+            _gamePrinter.PrintoutPlayers();
         }
 
         private void CreatePlayers(string[] players)
         {
-            foreach (var player in players)
-            {
-                _players.Add(new Player(player, 0, 0));
-            }
-        }
-
-        private void PrintoutPlayers(Action<string> writeLine)
-        {
-            for (int i = 0; i < _players.Count(); i++)
-            {
-                writeLine(_players.GetPlayerByIndex(i) + " was added");
-                writeLine("They are player number " + (i+1));
-            }
+            Array.ForEach(players, player => _players.Add(new Player(player, 0, 0)));
         }
 
         public bool RollOneRound(Random rand, Action<string> writeLine)
@@ -54,13 +44,13 @@ namespace Trivia
             if (currentPlayer.IsInPenaltyBox() && isGettingOutOfPenaltyBox || !currentPlayer.IsInPenaltyBox())
             {
                 currentPlayer.ChangeLocationBy(roundRollValue);
-                var currentCategory = _questionRepository.CurrentCategory(_players.GetCurentPlayer().Location());
+                var currentCategory = _questions.CurrentCategory(_players.GetCurentPlayer().Location());
                 writeLine(currentPlayer
                                      + "'s new location is "
                                      + currentPlayer.Location());
                 writeLine("The category is " + currentCategory.GetDescription());
-                writeLine(_questionRepository.GetFirstQuestionBy(currentCategory));
-                _questionRepository.RemoveFirstQuestionOf(currentCategory);
+                writeLine(_questions.GetFirstQuestionBy(currentCategory));
+                _questions.RemoveFirstQuestionOf(currentCategory);
             }
             if (rand.Next(9) == 7)
             {

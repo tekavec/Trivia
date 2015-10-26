@@ -8,7 +8,7 @@ namespace Trivia.Tests
     [TestFixture]
     public class QuestionRepositoryShould
     {
-        private QuestionRepository _questionRepository;
+        private QuestionRepository _questions;
         private Question _popQuestion;
         private Question _popQuestion1;
         private Question _rockQuestion;
@@ -19,7 +19,7 @@ namespace Trivia.Tests
         [SetUp]
         public void Init()
         {
-            _questionRepository = new QuestionRepository(1);
+            _questions = new QuestionRepository(1);
             _popQuestion = new Question(QuestionCategory.Pop, PopQuestionText0);
             _popQuestion1 = new Question(QuestionCategory.Pop, PopQuestionText0);
             _rockQuestion = new Question(QuestionCategory.Rock, RockQuestionText);
@@ -36,21 +36,21 @@ namespace Trivia.Tests
         [TestCase(10, QuestionCategory.Sports)]
         public void get_category_name_calculated_on_current_player_location(int location, QuestionCategory category)
         {
-            Assert.That(_questionRepository.CurrentCategory(location), Is.EqualTo(category));
+            Assert.That(_questions.CurrentCategory(location), Is.EqualTo(category));
         }
 
         [Test]
         public void get_first_question_by_category()
         {
-            Assert.That(_questionRepository.GetFirstQuestionBy(QuestionCategory.Pop), Is.EqualTo(PopQuestionText0));
+            Assert.That(_questions.GetFirstQuestionBy(QuestionCategory.Pop), Is.EqualTo(PopQuestionText0));
         }
 
         [Test]
         public void remove_first_question_of_category()
         {
-            _questionRepository.RemoveFirstQuestionOf(QuestionCategory.Pop);
+            _questions.RemoveFirstQuestionOf(QuestionCategory.Pop);
 
-            Assert.That(_questionRepository.Contains(_popQuestion), Is.False);
+            Assert.That(_questions.Contains(_popQuestion), Is.False);
         }
 
         [Test]
@@ -75,7 +75,7 @@ namespace Trivia.Tests
 
             foreach (var question in questions)
             {
-                Assert.That(_questionRepository.Contains(question), Is.True);
+                Assert.That(_questions.Contains(question), Is.True);
             }
         }
 

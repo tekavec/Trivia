@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Trivia
 {
-    internal class QuestionRepository
+    public class QuestionRepository
     {
         private readonly IList<Question> _questions = new List<Question>();
 

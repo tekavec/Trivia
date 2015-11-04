@@ -4,6 +4,7 @@ using ApprovalTests.Combinations;
 using ApprovalTests.Reporters;
 using NSubstitute.Core;
 using NUnit.Framework;
+using Trivia.Infrastructure;
 
 namespace Trivia.Tests
 {
@@ -20,10 +21,9 @@ namespace Trivia.Tests
             var seedsTwo = new[] {17, 19, 29, 37, 41, 57, 67};
 
             CombinationApprovals.VerifyAllCombinations(
-                (seedOne, seedTwo) =>
+                (seedOne, seedTwo) => 
                 {
-                    _console= new TestableConsole();
-
+                    _console = new TestableConsole();
                     GameRunner.RunGame(
                         new Random(seedOne*seedTwo + seedTwo),
                         _console.WriteLine);

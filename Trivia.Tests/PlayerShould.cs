@@ -1,11 +1,12 @@
 ﻿using NUnit.Framework;
+using Trivia.Model.Players;
 
 namespace Trivia.Tests
 {
     [TestFixture]
     public class PlayerShould
     {
-        private Player _playerA;
+        private IPlayer _playerA;
 
         [TestFixtureSetUp]
         public void Init()
@@ -25,7 +26,7 @@ namespace Trivia.Tests
         public void change_the_current_location_if_new_location_is_less_or_equal_than_11()
         {
 
-            _playerA.ChangeLocationBy(4);
+            _playerA.ChangeLocation(4);
 
             Assert.That(_playerA.Location(), Is.EqualTo(5));
         }
@@ -35,7 +36,7 @@ namespace Trivia.Tests
         {
             var player = new Player("bob", 2, 0);
 
-            player.ChangeLocationBy(13);
+            player.ChangeLocation(13);
 
             Assert.That(player.Location(), Is.EqualTo(3));
         }
@@ -53,7 +54,7 @@ namespace Trivia.Tests
         {
             var player = new Player("bob", 0, 5);
 
-            Assert.That(player.IsWinning(), Is.False);
+            Assert.That(player.IsNotWinning(), Is.True);
         }
 
         [Test]
@@ -61,7 +62,15 @@ namespace Trivia.Tests
         {
             var player = new Player("bob", 0, 6);
 
-            Assert.That(player.IsWinning(), Is.True);
+            Assert.That(player.IsNotWinning(), Is.False);
+        }
+
+        [Test]
+        public void return_its_name()
+        {
+            var player = new Player("bob", 0, 6);
+
+            Assert.That(player.Name(), Is.EqualTo("bob"));
         }
 
     }

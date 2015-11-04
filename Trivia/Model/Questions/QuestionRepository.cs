@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Trivia
+namespace Trivia.Model.Questions
 {
     public class QuestionRepository
     {
@@ -24,7 +24,7 @@ namespace Trivia
             return _questions.Contains(question);
         }
 
-        public QuestionCategory CurrentCategory(int location)
+        public QuestionCategory GetCategoryBy(int location)
         {
             if (location == 0) return QuestionCategory.Pop;
             if (location == 4) return QuestionCategory.Pop;
@@ -36,6 +36,11 @@ namespace Trivia
             if (location == 6) return QuestionCategory.Sports;
             if (location == 10) return QuestionCategory.Sports;
             return QuestionCategory.Rock;
+        }
+
+        public string GetCategoryNameBy(int location)
+        {
+            return GetCategoryBy(location).GetDescription();
         }
 
         public string GetFirstQuestionBy(QuestionCategory questionCategory)

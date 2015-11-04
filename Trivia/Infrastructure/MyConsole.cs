@@ -1,4 +1,4 @@
-﻿namespace Trivia
+﻿namespace Trivia.Infrastructure
 {
     public interface IMyConsole
     {

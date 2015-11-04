@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Trivia.Model.Questions;
 
 namespace Trivia.Tests
 {

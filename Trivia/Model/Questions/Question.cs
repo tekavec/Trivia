@@ -1,4 +1,4 @@
-namespace Trivia
+namespace Trivia.Model.Questions
 {
     public class Question
     {

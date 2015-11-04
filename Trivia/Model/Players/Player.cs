@@ -1,6 +1,6 @@
-namespace Trivia
+namespace Trivia.Model.Players
 {
-    public class Player
+    public class Player : IPlayer
     {
         private readonly string _name;
         private bool _isInPenaltyBox = false;
@@ -30,7 +30,7 @@ namespace Trivia
             return _isInPenaltyBox;
         }
 
-        public void ChangeLocationBy(int step)
+        public void ChangeLocation(int step)
         {
             _location += step;
             if (_location > 11)
@@ -54,9 +54,14 @@ namespace Trivia
             return _coins;
         }
 
-        public bool IsWinning()
+        public bool IsNotWinning()
         {
-            return _coins == WinningCoinNumber;
+            return _coins != WinningCoinNumber;
+        }
+
+        public string Name()
+        {
+            return _name;
         }
     }
 }

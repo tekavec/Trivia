@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using NSubstitute;
 using NUnit.Framework;
+using Trivia.Model.Questions;
 
 namespace Trivia.Tests
 {
@@ -10,8 +11,6 @@ namespace Trivia.Tests
     {
         private QuestionRepository _questions;
         private Question _popQuestion;
-        private Question _popQuestion1;
-        private Question _rockQuestion;
         private const string PopQuestionText0 = "Pop Question 0";
         private const string ScienceQuestionText0 = "Science Question 0";
         private const string RockQuestionText= "Rock Question 0";
@@ -21,8 +20,8 @@ namespace Trivia.Tests
         {
             _questions = new QuestionRepository(1);
             _popQuestion = new Question(QuestionCategory.Pop, PopQuestionText0);
-            _popQuestion1 = new Question(QuestionCategory.Pop, PopQuestionText0);
-            _rockQuestion = new Question(QuestionCategory.Rock, RockQuestionText);
+            new Question(QuestionCategory.Pop, PopQuestionText0);
+            new Question(QuestionCategory.Rock, RockQuestionText);
         }
 
         [TestCase(0, QuestionCategory.Pop)]
@@ -34,9 +33,15 @@ namespace Trivia.Tests
         [TestCase(2, QuestionCategory.Sports)]
         [TestCase(6, QuestionCategory.Sports)]
         [TestCase(10, QuestionCategory.Sports)]
-        public void get_category_name_calculated_on_current_player_location(int location, QuestionCategory category)
+        public void get_category_name_by_location(int location, QuestionCategory category)
         {
-            Assert.That(_questions.CurrentCategory(location), Is.EqualTo(category));
+            Assert.That(_questions.GetCategoryBy(location), Is.EqualTo(category));
+        }
+
+        [Test]
+        public void get_category_name_by_location()
+        {
+            Assert.That(_questions.GetCategoryNameBy(8), Is.EqualTo(QuestionCategory.Pop.GetDescription()));
         }
 
         [Test]

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Trivia
+namespace Trivia.Model.Questions
 {
     public enum QuestionCategory
     {

@@ -1,4 +1,5 @@
 ﻿using System;
+using Trivia.Application;
 
 namespace Trivia
 {

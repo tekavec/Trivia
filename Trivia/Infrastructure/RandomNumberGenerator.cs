@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Trivia
+namespace Trivia.Infrastructure
 {
     public interface IRandomNumberGenerator
     {

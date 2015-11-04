@@ -80,8 +80,9 @@
   <ItemGroup>
     <Compile Include="GamePrinterShould.cs" />
     <Compile Include="GameShould.cs" />
-    <Compile Include="PlayerRepositoryShould.cs" />
+    <Compile Include="GameEngineShould.cs" />
     <Compile Include="PlayerShould.cs" />
+    <Compile Include="PlayersShould.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuestionCategoryShould.cs" />
     <Compile Include="QuestionRepositoryShould.cs" />

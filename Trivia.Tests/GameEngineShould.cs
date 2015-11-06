@@ -1,6 +1,7 @@
 ﻿using NSubstitute;
 using NUnit.Framework;
 using Trivia.Application;
+using Trivia.Infrastructure;
 using Trivia.Model.Players;
 
 namespace Trivia.Tests
@@ -17,13 +18,16 @@ namespace Trivia.Tests
         private int _defaultPlayerIndex = 0;
         private IPlayer _mockedPlayer;
         private IPlayers _players;
+        private readonly IMyConsole _console = Substitute.For<IMyConsole>();
+        private GamePrinter _gamePrinter;
 
         [SetUp]
         public void Init()
         {
+            _gamePrinter = new GamePrinter(_console.WriteLine);
             _mockedPlayer = Substitute.For<IPlayer>();
             _players = Substitute.For<IPlayers>();
-            _gameEngine = new GameEngine(_players);
+            _gameEngine = new GameEngine(_players, _gamePrinter);
             _playerA = new Player("ana", _defaultLocation, _defaultNumberOfCoins);
             _playerB = new Player("bob", _defaultLocation, _defaultNumberOfCoins);
         }
@@ -40,7 +44,7 @@ namespace Trivia.Tests
         public void get_current_players_name()
         {
             _players.GetNextPlayer().Returns(_mockedPlayer);
-            _gameEngine = new GameEngine(_players);
+            _gameEngine = new GameEngine(_players, _gamePrinter);
 
             _gameEngine.GetCurrentPlayerName();
 
@@ -51,7 +55,7 @@ namespace Trivia.Tests
         public void check_if_the_current_player_is_not_in_the_penalty_box()
         {
             _players.GetNextPlayer().Returns(_mockedPlayer);
-            _gameEngine = new GameEngine(_players);
+            _gameEngine = new GameEngine(_players, _gamePrinter);
 
             _gameEngine.IsCurrentPlayerInPenaltyBox();
 
@@ -62,7 +66,7 @@ namespace Trivia.Tests
         public void get_the_current_player_location()
         {
             _players.GetNextPlayer().Returns(_mockedPlayer);
-            _gameEngine = new GameEngine(_players);
+            _gameEngine = new GameEngine(_players, _gamePrinter);
 
             _gameEngine.GetCurrentPlayerLocation();
 
@@ -73,7 +77,7 @@ namespace Trivia.Tests
         public void change_the_current_player_location()
         {
             _players.GetNextPlayer().Returns(_mockedPlayer);
-            _gameEngine = new GameEngine(_players);
+            _gameEngine = new GameEngine(_players, _gamePrinter);
 
             _gameEngine.ChangeCurrentPlayerLocation(_newLocation);
 
@@ -84,7 +88,7 @@ namespace Trivia.Tests
         public void penalize_the_current_player()
         {
             _players.GetNextPlayer().Returns(_mockedPlayer);
-            _gameEngine = new GameEngine(_players);
+            _gameEngine = new GameEngine(_players, _gamePrinter);
 
             _gameEngine.PenalizeCurrentPlayer();
 
@@ -95,23 +99,24 @@ namespace Trivia.Tests
         public void give_a_coin_to_the_current_player()
         {
             _players.GetNextPlayer().Returns(_mockedPlayer);
-            _gameEngine = new GameEngine(_players);
+            _gameEngine = new GameEngine(_players, _gamePrinter);
 
             _gameEngine.GiveCoinToCurrentPlayer();
 
             _mockedPlayer.Received().IncreaseCoinsByOne();
         }
 
-        //[Test]
-        //public void conclude_the_current_player_is_not_winning()
-        //{
-        //    _players.GetNextPlayer().Returns(_mockedPlayer);
-        //    _gameEngine = new GameEngine(_players);
+        [Test]
+        public void determine_if_question_should_be_asked()
+        {
+            
+        }
 
-        //    _gameEngine.GiveCoinToCurrentPlayer();
-
-        //    _mockedPlayer.Received().IsNotWinning();
-        //}
+        [Test]
+        public void print_report_and_exit()
+        {
+            
+        }
 
     }
 }

@@ -81,6 +81,9 @@
     <Compile Include="GamePrinterShould.cs" />
     <Compile Include="GameShould.cs" />
     <Compile Include="GameEngineShould.cs" />
+    <Compile Include="AskQuestionMessageShould.cs" />
+    <Compile Include="PenaltyBoxMessageShould.cs" />
+    <Compile Include="PlayerRollingMessageShould.cs" />
     <Compile Include="PlayerShould.cs" />
     <Compile Include="PlayersShould.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

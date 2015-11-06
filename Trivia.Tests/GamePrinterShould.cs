@@ -9,7 +9,6 @@ namespace Trivia.Tests
     public class GamePrinterShould
     {
         private readonly IMyConsole _console = Substitute.For<IMyConsole>();
-        private QuestionRepository _questions;
         private GamePrinter _gamePrinter;
         private string _playerName = "ana";
         private int _roundRollValue = 42;
@@ -21,7 +20,7 @@ namespace Trivia.Tests
         [SetUp]
         public void Init()
         {
-            _questions = new QuestionRepository(1);
+            new QuestionRepository(1);
             _gamePrinter = new GamePrinter(_console.WriteLine);
         }
 

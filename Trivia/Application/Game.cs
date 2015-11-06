@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Trivia.Infrastructure;
 using Trivia.Model.Players;
 using Trivia.Model.Questions;
@@ -7,16 +8,16 @@ namespace Trivia.Application
 {
     public class Game
     {
-        private readonly IPlayers _players;
         private readonly GameEngine _gameEngine;
-        private readonly QuestionRepository _questions = new QuestionRepository(50);
         private readonly GamePrinter _gamePrinter;
+        private readonly IPlayers _players;
+        private readonly QuestionRepository _questions = new QuestionRepository(50);
 
         public Game(Action<string> writeLine, string[] players)
         {
             _players = new Players();
             CreatePlayers(players);
-            _gameEngine = new GameEngine(_players);
+            _gameEngine = new GameEngine(_players, new GamePrinter(writeLine));
             _gamePrinter = new GamePrinter(writeLine);
             _gamePrinter.PrintoutPlayers(players);
         }
@@ -28,35 +29,33 @@ namespace Trivia.Application
 
         public bool RollOneRound(Random rand, Action<string> writeLine)
         {
-            int roundRollValue = rand.Next(5) + 1;
-            var isLuckyRoll = (roundRollValue % 2 != 0);
+            var newLocation = rand.Next(5) + 1;
+            var isLuckyRoll = (newLocation % 2 != 0);
+            var isPenalizingRoll = rand.Next(9) == 7;
+            var _messageCollector = new StringBuilder();
+
             var currentPlayer = _gameEngine.CurrentPlayer();
-            _gamePrinter.PrintoutCurrentPlayerRolling(roundRollValue, _gameEngine.GetCurrentPlayerName());
 
-            if (_gameEngine.IsCurrentPlayerInPenaltyBox())
-            {
-                if (isLuckyRoll)
-                {
-                    _gamePrinter.PrintoutGettingOutFromPenaltyBox(_gameEngine.GetCurrentPlayerName());
-                }
-                else
-                {
-                    _gamePrinter.PrintoutNotGettingOutFromPenaltyBox(_gameEngine.GetCurrentPlayerName());
-                }
-            }
+            new PlayerRollingMessage(newLocation, _gameEngine.GetCurrentPlayerName()).AppendMessageTo(_messageCollector);
+            new PenaltyBoxMessage(_gameEngine.IsCurrentPlayerInPenaltyBox(), isLuckyRoll, _gameEngine.GetCurrentPlayerName())
+                        .AppendMessageTo(_messageCollector);
 
-            if ((_gameEngine.IsCurrentPlayerInPenaltyBox() && isLuckyRoll) || !_gameEngine.IsCurrentPlayerInPenaltyBox())
+            var report = _messageCollector.ToString();
+            writeLine(report.Remove(report.LastIndexOf(Environment.NewLine)));
+            
+            if ((_gameEngine.IsCurrentPlayerInPenaltyBox() && isLuckyRoll) 
+                || !_gameEngine.IsCurrentPlayerInPenaltyBox())
             {
-                _gameEngine.ChangeCurrentPlayerLocation(roundRollValue);
+                _gameEngine.ChangeCurrentPlayerLocation(newLocation);
                 var currentCategory = _questions.GetCategoryBy(_gameEngine.GetCurrentPlayerLocation());
                 _gamePrinter.PrintoutCurrentPlayerNewLocationAndQuestion(
                     _gameEngine.GetCurrentPlayerName(),
                     _gameEngine.GetCurrentPlayerLocation(),
                     _questions.GetCategoryNameBy(_gameEngine.GetCurrentPlayerLocation()),
-                    _questions.GetFirstQuestionBy(currentCategory));
+                    _questions.GetNextQuestionBy(currentCategory));
                 _questions.RemoveFirstQuestionOf(currentCategory);
             }
-            if (rand.Next(9) == 7)
+            if (isPenalizingRoll)
             {
                 _gamePrinter.PrintoutMessageForIncorrectlyAnsweredQuestion(_gameEngine.GetCurrentPlayerName());
                 _gameEngine.PenalizeCurrentPlayer();
@@ -66,7 +65,8 @@ namespace Trivia.Application
             if (_gameEngine.IsCurrentPlayerInPenaltyBox() && isLuckyRoll)
             {
                 _gameEngine.GiveCoinToCurrentPlayer();
-                _gamePrinter.PrintoutCorrectAnswer(_gameEngine.GetCurrentPlayerName(), _gameEngine.CurrentPlayer().Coins());
+                _gamePrinter.PrintoutCorrectAnswer(_gameEngine.GetCurrentPlayerName(),
+                    _gameEngine.CurrentPlayer().Coins());
                 _gameEngine.SetNextCurrentPlayer();
                 return currentPlayer.IsNotWinning();
             }

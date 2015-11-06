@@ -1,15 +1,18 @@
-﻿using Trivia.Model.Players;
+﻿using Trivia.Infrastructure;
+using Trivia.Model.Players;
 
 namespace Trivia.Application
 {
     public class GameEngine
     {
         private readonly IPlayers _players;
+        private readonly GamePrinter _gamePrinter;
         private IPlayer _currentPlayer;
 
-        public GameEngine(IPlayers players)
+        public GameEngine(IPlayers players, GamePrinter gamePrinter)
         {
             _players = players;
+            _gamePrinter = gamePrinter;
             _currentPlayer = players.GetNextPlayer();
         }
 

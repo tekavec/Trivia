@@ -47,7 +47,7 @@ namespace Trivia.Tests
         [Test]
         public void get_first_question_by_category()
         {
-            Assert.That(_questions.GetFirstQuestionBy(QuestionCategory.Pop), Is.EqualTo(PopQuestionText0));
+            Assert.That(_questions.GetNextQuestionBy(QuestionCategory.Pop), Is.EqualTo(PopQuestionText0));
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace Trivia.Tests
         {
             var questionRepository = new QuestionRepository(0);
 
-            questionRepository.GetFirstQuestionBy(QuestionCategory.Pop);
+            questionRepository.GetNextQuestionBy(QuestionCategory.Pop);
         }
 
         [Test]

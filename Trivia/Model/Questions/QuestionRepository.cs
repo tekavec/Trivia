@@ -43,7 +43,7 @@ namespace Trivia.Model.Questions
             return GetCategoryBy(location).GetDescription();
         }
 
-        public string GetFirstQuestionBy(QuestionCategory questionCategory)
+        public string GetNextQuestionBy(QuestionCategory questionCategory)
         {
             var question
                 = _questions.FirstOrDefault(a => a.Category() == questionCategory);

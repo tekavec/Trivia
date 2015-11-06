@@ -2,7 +2,32 @@ using System;
 
 namespace Trivia.Infrastructure
 {
-    public class GamePrinter
+    public interface IGamePrinter
+    {
+        void PrintoutPlayers(string[] players);
+
+        void PrintoutCurrentPlayerRolling(
+            int roundRollValue,
+            string playerName);
+
+        void PrintoutCorrectAnswer(
+            string playerName,
+            int coins);
+
+        void PrintoutGettingOutFromPenaltyBox(string playerName);
+        void PrintoutNotGettingOutFromPenaltyBox(string playerName);
+
+        void PrintoutCurrentPlayerNewLocationAndQuestion(
+            string playerName,
+            int playerLocation, 
+            string categoryName, 
+            string question);
+
+        void PrintoutMessageForIncorrectlyAnsweredQuestion(
+            string playerName);
+    }
+
+    public class GamePrinter : IGamePrinter
     {
         private readonly Action<string> _writeLine;
 

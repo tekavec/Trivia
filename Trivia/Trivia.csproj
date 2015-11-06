@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Application\Game.cs" />
     <Compile Include="Application\GameEngine.cs" />
+    <Compile Include="AskQuestionMessage.cs" />
     <Compile Include="Infrastructure\GamePrinter.cs" />
     <Compile Include="Infrastructure\MyConsole.cs" />
     <Compile Include="Infrastructure\RandomNumberGenerator.cs" />
@@ -78,6 +79,8 @@
     <Compile Include="Model\Questions\Question.cs" />
     <Compile Include="Model\Questions\QuestionCategory.cs" />
     <Compile Include="Model\Questions\QuestionRepository.cs" />
+    <Compile Include="PenaltyBoxMessage.cs" />
+    <Compile Include="PlayerRollingMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EnumExtensions.cs" />
   </ItemGroup>
